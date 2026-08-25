@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "qwen-tts"
-version = "0.1.1"
-description = "Qwen-TTS python package"
+name = "qwen-tts-hf"
+version = "0.1.1.post1"
+description = "Unofficial Qwen-TTS compatibility build for Transformers 5"
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
@@ -15,8 +15,10 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
 ]
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 authors = [{ name = "Alibaba Qwen Team" }]
+maintainers = [{ name = "Andres Marafioti" }]
 
 dependencies = [
   "transformers>=5.15.1,<6",
@@ -32,7 +34,9 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/Qwen/Qwen3-TTS"
-Repository = "https://github.com/Qwen/Qwen3-TTS"
+Repository = "https://github.com/andimarafioti/Qwen3-TTS/tree/distribution/qwen-tts-hf"
+Upstream = "https://github.com/QwenLM/Qwen3-TTS"
+"Transformers 5 patch" = "https://github.com/QwenLM/Qwen3-TTS/pull/360"
 
 [project.scripts]
 qwen-tts-demo = "qwen_tts.cli.demo:main"

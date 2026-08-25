@@ -1,5 +1,17 @@
 # Qwen3-TTS
 
+> [!IMPORTANT]
+> `qwen-tts-hf` is an unofficial compatibility distribution of Qwen-TTS for
+> Transformers 5. It is built from the patch proposed in
+> [QwenLM/Qwen3-TTS#360](https://github.com/QwenLM/Qwen3-TTS/pull/360) and is
+> intended as a temporary dependency until upstream publishes equivalent
+> support. It provides the same `qwen_tts` Python package as upstream
+> `qwen-tts`; do not install both distributions in the same environment.
+
+```bash
+pip install "qwen-tts-hf==0.1.1.post1"
+```
+
 <br>
 
 <p align="center">

@@ -25,4 +25,5 @@ patch_transformers_rope_registry()
 from .inference.qwen3_tts_model import Qwen3TTSModel, VoiceClonePromptItem
 from .inference.qwen3_tts_tokenizer import Qwen3TTSTokenizer
 
+__version__ = "0.1.1.post1"
 __all__ = ["__version__"]
