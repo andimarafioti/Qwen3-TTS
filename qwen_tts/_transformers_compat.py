@@ -9,9 +9,6 @@ from __future__ import annotations
 import torch
 
 
-_PATCHED = False
-
-
 def _default_rope_parameters(config, device=None, seq_len=None, layer_type=None):
     """Initialize the unscaled RoPE variant removed from the 5.x registry."""
     del seq_len, layer_type
@@ -29,16 +26,20 @@ def _default_rope_parameters(config, device=None, seq_len=None, layer_type=None)
     return inv_freq, 1.0
 
 
-def patch_transformers_rope_registry() -> None:
-    """Register the default RoPE initializer expected by Qwen3-TTS configs."""
-    global _PATCHED
-    if _PATCHED:
-        return
+def rope_init_function(rope_type: str):
+    """Return the RoPE initializer for a Qwen3-TTS module.
+
+    Transformers 5 removed "default" from ``ROPE_INIT_FUNCTIONS``. Resolve it
+    locally instead of registering it globally: since Transformers 5.17 a
+    registry entry overrides each model's own ``compute_default_rope_parameters``
+    (for example Mimi's, which reads ``config.rope_parameters``).
+    """
+    if rope_type == "default":
+        return _default_rope_parameters
 
     from transformers.modeling_rope_utils import ROPE_INIT_FUNCTIONS
 
-    ROPE_INIT_FUNCTIONS.setdefault("default", _default_rope_parameters)
-    _PATCHED = True
+    return ROPE_INIT_FUNCTIONS[rope_type]
 
 
 @torch.no_grad()

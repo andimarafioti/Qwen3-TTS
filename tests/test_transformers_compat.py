@@ -2,9 +2,10 @@ import torch
 from transformers.modeling_rope_utils import ROPE_INIT_FUNCTIONS
 
 from qwen_tts._transformers_compat import (
-    patch_transformers_rope_registry,
+    _default_rope_parameters,
     restore_mimi_full_attention,
     restore_rope_buffers,
+    rope_init_function,
 )
 
 
@@ -41,10 +42,27 @@ def test_restore_rope_buffers():
     assert model[0].attention_scaling == 1.0
 
 
-def test_default_rope_initializer_is_registered():
-    patch_transformers_rope_registry()
+def test_default_rope_initializer_is_local():
+    import qwen_tts  # noqa: F401
 
-    assert "default" in ROPE_INIT_FUNCTIONS
+    assert "default" not in ROPE_INIT_FUNCTIONS
+    assert rope_init_function("default") is _default_rope_parameters
+    assert rope_init_function("linear") is ROPE_INIT_FUNCTIONS["linear"]
+
+
+def test_mimi_rope_initializes_after_import():
+    import qwen_tts  # noqa: F401
+    from transformers import MimiConfig
+    from transformers.models.mimi.modeling_mimi import MimiPreTrainedModel, MimiRotaryEmbedding
+
+    config = MimiConfig()
+    rope = MimiRotaryEmbedding(config)
+    expected = rope.inv_freq.clone()
+    rope.inv_freq.zero_()
+
+    MimiPreTrainedModel(config)._init_weights(rope)
+
+    torch.testing.assert_close(rope.inv_freq, expected)
 
 
 def test_restore_mimi_full_attention():
